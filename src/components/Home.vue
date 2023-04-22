@@ -1,64 +1,67 @@
 <script lang="ts" setup>
-import {
-  ref,
-  computed,
-  onMounted,
-  onUnmounted,
-  $navigateTo,
-} from "nativescript-vue";
-import Details from "./Details.vue";
+import { useRootLayout } from "~/useRootLayout";
+import Message from "~/components/rootLayout/Message.vue";
+import MessageGesture from "~/components/rootLayout/MessageGesture.vue";
 
-const counter = ref(0);
-const message = computed(() => {
-  return `Blank {N}-Vue app: ${counter.value}`;
-});
+const { showMessage, showPlayer } = useRootLayout();
 
-function logMessage() {
-  console.log("You have tapped the message!");
-}
+const openMessage = () => showMessage(Message, {
+  props: {
+    hasTimer: true
+  },
+  rootLayoutOptions: {
+    shadeCover: {
+      opacity: 0,
+      tapToClose: true,
+    },
+  }
+})
+const openMessageWithGesture = () => showMessage(MessageGesture);
+const openPlayer = () => showPlayer();
 
-let interval: any;
-onMounted(() => {
-  console.log("mounted");
-  interval = setInterval(() => counter.value++, 100);
-});
-
-onUnmounted(() => {
-  console.log("unmounted");
-  clearInterval(interval);
-});
 </script>
 
 <template>
   <Frame>
-    <Page>
-      <ActionBar>
-        <Label text="Home" class="font-bold text-lg" />
-      </ActionBar>
+    <Page actionBarHidden="true" class="bg-[#202124]"
+      androidStatusBarBackground="#202124">
+      <RootLayout>
+        <FlexboxLayout class="flex-col ">
+          <FlexboxLayout class="h-[50%] items-center justify-center">
+            <Label text="breakfast_dining" style="font-size: 68" class="m-icon-round text-[#19e68c] bg-[#19e68d27] p-14 rounded-full" />
+          </FlexboxLayout>
 
-      <GridLayout rows="*, auto, auto, *" class="px-4">
-        <Label
-          row="1"
-          class="text-xl align-middle text-center text-gray-500"
-          :text="message"
-          @tap="logMessage"
-        />
-
-        <Button
-          row="2"
-          @tap="$navigateTo(Details)"
-          class="mt-4 px-4 py-2 bg-white border-2 border-blue-400 rounded-lg"
-          horizontalAlignment="center"
-        >
-          View Details
-        </Button>
-      </GridLayout>
+          <FlexboxLayout class="px-4 flex-col justify-end h-[50%] mb-6">
+            <FlexboxLayout class="btn" @tap="openPlayer">
+                <Label text="Super Toast " />
+                <Label text="bolt" class="m-icon-round text-black" />
+              </FlexboxLayout>
+              <FlexboxLayout class="btn" @tap="openMessageWithGesture">
+                <Label text="Interactive Toast " />
+                <Label text="swipe" class="m-icon-round text-black" />
+              </FlexboxLayout>
+              <FlexboxLayout class="btn" @tap="openMessage">
+                <Label text="Toast with Timer " />
+                <Label text="timer" class="m-icon-round text-black" />
+              </FlexboxLayout>
+            </FlexboxLayout>
+        </FlexboxLayout>
+      </RootLayout>
     </Page>
   </Frame>
 </template>
 
-<style>
-/* .info {
-    font-size: 20;
-  } */
+<style lang="scss" scoped>
+.btn {
+  margin: 10;
+  padding: 0 6;
+  background-color: #19e68d27;
+  border-radius: 50%;
+  width: 100%;
+  height: 50;
+  text-align: center;
+  justify-content: center;
+  font-size: 18;
+  color: #19e68c;
+}
 </style>
